@@ -3,20 +3,24 @@ package ru.nsu.g.akononov.Arkanoid.model.components;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class Board {
-    public int height;
-    public int width;
+public class Board extends ObjectArea{
 
-    public ArrayList<Rectangle> sides = new ArrayList<>();
+    public ArrayList<Rectangle> barriers = new ArrayList<>();
 
     public Board(int height, int width)
     {
-        this.height = height;
-        this.width = width;
+        area = new Rectangle(0,0, width, height);
 
-        sides.add(new Rectangle(0, -100, width, 100));
-        sides.add(new Rectangle(-100, 0, 100, height));
-        sides.add(new Rectangle(0, height, width, 100));
-        sides.add(new Rectangle(width, 0, 100, height));
+        int depth = 200;
+        sidesInit(depth);
+    }
+
+    private void sidesInit(int depth)
+    {
+        barriers.clear();
+        barriers.add(new Rectangle(0, -depth, getWidth(), depth));
+        barriers.add(new Rectangle(-depth, 0, depth, getHeight()));
+        barriers.add(new Rectangle(0, getHeight(), getWidth(), depth));
+        barriers.add(new Rectangle(getWidth(), 0, depth, getHeight()));
     }
 }

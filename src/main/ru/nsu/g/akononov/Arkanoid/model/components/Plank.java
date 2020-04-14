@@ -1,35 +1,25 @@
 package ru.nsu.g.akononov.Arkanoid.model.components;
 
-public class Plank {
-    private int plankWidth;
-    private int plankHeight;
+import java.awt.*;
 
+public class Plank extends ObjectArea{
     private int boardWidth;
-    private int speedX = 1;
-
-    private int x;
-    private int y;
+    private int speedX = 25;
 
     public Plank(int x, int y, int plankWight, int plankHeight, int boardWight) {
-        this.x = x;
-        this.y = y;
 
-        this.plankHeight = plankHeight;
-        this.plankWidth = plankWight;
-
-        this.boardWidth = boardWight;
+        area = new Rectangle(x, y, plankWight, plankHeight);
+        boardWidth = boardWight;
     }
 
-    public int getX() {
-        return x;
+    public void move(boolean right) {
+        if (((area.x + (right ? 1 : -1) * speedX) >= 0) && ((area.x + (right ? 1 : -1) * speedX + area.width) <  boardWidth)) {
+            area.x += (right ? 1 : -1) * speedX;
+        }
     }
 
-    public int getY() {
-        return y;
-    }
-
-    public void move(boolean right)
+    public void setSpeedX(int speedX)
     {
-        x += (right ? 1 : -1)*speedX;
+        this.speedX = speedX;
     }
 }

@@ -6,30 +6,18 @@ import java.util.*;
 
 import ru.nsu.g.akononov.Arkanoid.model.util.*;
 
-public class Ball {
-    private Rectangle area;
-
-    private Board board;
+public class Ball extends ObjectArea {
 
     private int speedX = 1;
     private int speedY = 1;
     private boolean right = true;
     private boolean up = false;
 
-    public Ball(int x, int y, int radius, Board board) {
-
+    public Ball(int x, int y, int radius) {
         area = new Rectangle(x-radius, y-radius, radius * 2, radius * 2);
-
-        this.board = board;
     }
 
-    public int getX() {
-        return area.x;
-    }
-
-    public int getY() {
-        return area.y;
-    }
+    public int getRadius() { return area.height/2;}
 
     public void setSpeedX(int speedX) {
         this.speedX = speedX;
@@ -40,22 +28,16 @@ public class Ball {
     }
 
     public void move() {
-
-        for(var obj : board.sides)
-        {
-            reflection(obj);
-        }
-
         area.x += (right ? 1 : -1) * speedX;
         area.y += (up ? 1 : -1) * speedY;
     }
 
-    private void reflection(Rectangle rectangle)
+    public boolean reflection(Rectangle rectangle)
     {
         edge state = contains(rectangle);
 
         if(state == edge.OUTSIDE)
-            return;
+            return false;
 
         if(state == edge.LEFT || state == edge.RIGHT) {
             right = !right;
@@ -64,8 +46,20 @@ public class Ball {
         if(state == edge.UP || state == edge.DOWN) {
             up = !up;
         }
+
+        return true;
     }
 
+    public boolean reflectBrick(Brick brick)
+    {
+        if(reflection(brick.area))
+        {
+            brick.setDestroyed();
+            return true;
+        }
+
+        return false;
+    }
 
     private edge contains(Rectangle rectangle) {
         //Проверяем, пересекаются ли прямоугольник и квадрат, в который вписан круг

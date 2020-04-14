@@ -1,23 +1,39 @@
 package ru.nsu.g.akononov.Arkanoid.controller;
 
 import ru.nsu.g.akononov.Arkanoid.model.Model;
-import ru.nsu.g.akononov.Arkanoid.model.Observer;
-import ru.nsu.g.akononov.Arkanoid.view.View;
 
-public class Controller implements Observer {
-    private Model model;
-    private View view;
+import javax.swing.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
-    private int x;
-    private int y;
+public class Controller {
+    Model model;
+    JFrame gameFrame;
 
-    public Controller(Model model) {
+    public Controller(Model model, JFrame gameFrame) {
         this.model = model;
-        //view = new View();
-    }
+        this.gameFrame = gameFrame;
 
-    @Override
-    public void updateField() {
-        System.out.println(x + " " + y);
+        gameFrame.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                final boolean right = true;
+
+                if(e.getKeyCode() == KeyEvent.VK_LEFT)
+                {
+                    model.movePlank(!right);
+                }
+
+                if(e.getKeyCode() == KeyEvent.VK_RIGHT)
+                {
+                    model.movePlank(right);
+                }
+
+                if(e.getKeyCode() == KeyEvent.VK_ENTER)
+                {
+                    model.startGame();
+                }
+            }
+        });
     }
 }
