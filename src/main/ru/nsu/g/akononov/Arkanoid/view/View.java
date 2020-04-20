@@ -8,10 +8,10 @@ import java.util.ArrayList;
 
 public class View implements Observer {
 
-    private Model model;
-    private Controller controller;
-    private GameFrame gameFrame;
-    private MenuFrame menuFrame;
+    public Model model;
+    public Controller controller;
+    public MainFrame gameFrame;
+    public MenuFrame menuFrame;
 
     private printableObject ball;
     private printableObject plank;
@@ -22,27 +22,27 @@ public class View implements Observer {
     public View(Model model) {
 
         this.model = model;
+
         initGameFrame();
+        menuFrame = new MenuFrame();
 
-        //menuFrame = new MenuFrame();
-
-        this.controller = new Controller(model, gameFrame);
+        this.controller = new Controller(this);
     }
 
-    private void initGameFrame()
-    {
-        ball = new printableObject("src/resources/ball.png", model.ball.getRadius() * 2, model.ball.getRadius() * 2);
-        plank = new printableObject("src/resources/plank.png", model.plank.getHeight(), model.plank.getWidth());
-        background = new printableObject("src/resources/background.png", model.board.getHeight(), model.board.getWidth());
+    private void initGameFrame() {
+        ball = new printableObject("/ball.png", model.ball.getRadius() * 2, model.ball.getRadius() * 2);
+        plank = new printableObject("/plank.png", model.plank.getHeight(), model.plank.getWidth());
+        background = new printableObject("/background.png", model.board.getHeight(), model.board.getWidth());
         wall = new ArrayList<>();
         initCoords();
 
-        gameFrame = new GameFrame(model.board.getWidth(), model.board.getHeight(), ball, plank, background, wall);
+        gameFrame = new MainFrame(model.board.getWidth(), model.board.getHeight(), ball, plank, background, wall);
+        gameFrame.setVisible(false);
     }
 
     private void initCoords() {
         for (int i = 0; i < model.wall.bricks.size(); i++) {
-            wall.add(new printableObject("src/resources/brick.png", model.wall.getBrickHeight(), model.wall.getBrickWidth()));
+            wall.add(new printableObject("/brick.png", model.wall.getBrickHeight(), model.wall.getBrickWidth()));
             wall.get(i).setX(model.wall.bricks.get(i).getX());
             wall.get(i).setY(model.wall.bricks.get(i).getY());
         }
@@ -63,7 +63,7 @@ public class View implements Observer {
     }
 
     @Override
-    public void updateWall(int index) {
+    public void updateBrick(int index) {
         wall.get(index).setVisible(false);
     }
 
@@ -73,5 +73,12 @@ public class View implements Observer {
         plank.setY(model.plank.getY());
 
         gameFrame.repaint();
+    }
+
+    @Override
+    public void updateWall() {
+        for (int i = 0; i < model.wall.bricks.size(); i++) {
+            wall.get(i).setVisible(true);
+        }
     }
 }

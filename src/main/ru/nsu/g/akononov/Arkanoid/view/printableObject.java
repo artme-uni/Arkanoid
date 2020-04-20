@@ -1,5 +1,6 @@
 package ru.nsu.g.akononov.Arkanoid.view;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -39,9 +40,12 @@ public class printableObject extends JPanel {
     }
 
     protected void loadImage(String imageName) {
-        ImageIcon sourceImage = new ImageIcon(imageName);
-        ImageIcon imageIcon = new ImageIcon(sourceImage.getImage().getScaledInstance(area.width, area.height, Image.SCALE_DEFAULT));
-        image = imageIcon.getImage();
+        try {
+            Image img = ImageIO.read(this.getClass().getResourceAsStream(imageName));
+            image = img.getScaledInstance(area.width, area.height, Image.SCALE_DEFAULT);
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
     }
 
     @Override

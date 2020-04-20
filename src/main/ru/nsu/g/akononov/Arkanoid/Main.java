@@ -11,7 +11,7 @@ import java.awt.*;
 public class  Main {
     public static void main(String[] args) {
         EventQueue.invokeLater(()-> {
-            Model model = new Model(900, 900);
+            Model model = new Model(900, 1300);
             View view = new View(model);
 
             model.registerObserver(view);

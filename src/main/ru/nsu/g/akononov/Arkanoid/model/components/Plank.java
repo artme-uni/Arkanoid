@@ -12,9 +12,9 @@ public class Plank extends ObjectArea{
         boardWidth = boardWight;
     }
 
-    public void move(boolean right) {
-        if (((area.x + (right ? 1 : -1) * speedX) >= 0) && ((area.x + (right ? 1 : -1) * speedX + area.width) <  boardWidth)) {
-            area.x += (right ? 1 : -1) * speedX;
+    public void move(boolean isRight) {
+        if (((area.x + (isRight ? 1 : -1) * speedX) >= 0) && ((area.x + (isRight ? 1 : -1) * speedX + area.width) <  boardWidth)) {
+            area.x += (isRight ? 1 : -1) * speedX;
         }
     }
 

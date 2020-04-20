@@ -11,7 +11,9 @@ public class Ball extends ObjectArea {
     private int speedX = 1;
     private int speedY = 1;
     private boolean right = true;
-    private boolean up = false;
+    private boolean down = false;
+
+    private int shift = 25;
 
     public Ball(int x, int y, int radius) {
         area = new Rectangle(x-radius, y-radius, radius * 2, radius * 2);
@@ -20,31 +22,60 @@ public class Ball extends ObjectArea {
     public int getRadius() { return area.height/2;}
 
     public void setSpeedX(int speedX) {
-        this.speedX = speedX;
+        if(speedX < 0)
+            right = false;
+
+        this.speedX = Math.abs(speedX);
     }
 
     public void setSpeedY(int speedY) {
-        this.speedY = speedY;
+        this.speedY = Math.abs(speedY);
     }
 
     public void move() {
         area.x += (right ? 1 : -1) * speedX;
-        area.y += (up ? 1 : -1) * speedY;
+        area.y += (down ? 1 : -1) * speedY;
+    }
+
+    public void moveBack() {
+        area.x -= (right ? 1 : -1) * speedX;
+        area.y -= (down ? 1 : -1) * speedY;
+    }
+
+    public void setShift(int shift)
+    {
+        this.shift = shift;
+    }
+
+    public void shift(boolean isRight, int boardWidth)
+    {
+        if (((area.x + (isRight ? 1 : -1) * shift - getWidth()/2) >= 0) && ((area.x + (isRight ? 1 : -1) * shift + 1.5 * area.width) <  boardWidth)) {
+            area.x += (isRight ? 1 : -1) * shift;
+        }
     }
 
     public boolean reflection(Rectangle rectangle)
     {
         edge state = contains(rectangle);
 
-        if(state == edge.OUTSIDE)
+        if(state == edge.OUTSIDE) {
             return false;
-
-        if(state == edge.LEFT || state == edge.RIGHT) {
-            right = !right;
         }
 
-        if(state == edge.UP || state == edge.DOWN) {
-            up = !up;
+        if(state == edge.LEFT && right){
+            right = false;
+        }
+
+        if(state == edge.RIGHT && !right){
+            right = true;
+        }
+
+        if(state == edge.UP && down){
+            down = false;
+        }
+
+        if(state == edge.DOWN && !down){
+            down = true;
         }
 
         return true;

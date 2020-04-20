@@ -1,39 +1,54 @@
 package ru.nsu.g.akononov.Arkanoid.controller;
 
 import ru.nsu.g.akononov.Arkanoid.model.Model;
+import ru.nsu.g.akononov.Arkanoid.view.View;
 
 import javax.swing.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 
 public class Controller {
-    Model model;
-    JFrame gameFrame;
 
-    public Controller(Model model, JFrame gameFrame) {
-        this.model = model;
-        this.gameFrame = gameFrame;
+    public Controller(View view) {
 
-        gameFrame.addKeyListener(new KeyAdapter() {
+        view.gameFrame.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 final boolean right = true;
 
                 if(e.getKeyCode() == KeyEvent.VK_LEFT)
                 {
-                    model.movePlank(!right);
+                    view.model.shift(!right);
                 }
 
                 if(e.getKeyCode() == KeyEvent.VK_RIGHT)
                 {
-                    model.movePlank(right);
+                    view.model.shift(right);
                 }
 
-                if(e.getKeyCode() == KeyEvent.VK_ENTER)
+                if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
                 {
-                    model.startGame();
+                    view.model.playPause();
                 }
             }
         });
+
+        view.gameFrame.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                view.model.setDirection(e.getX(), e.getY());
+                view.model.startGame();
+            }
+        });
+
+        view.menuFrame.start.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                view.menuFrame.setVisible(false);
+                view.gameFrame.setVisible(true);
+                view.gameFrame.setFocusable(true);
+            }
+        });
+
     }
 }

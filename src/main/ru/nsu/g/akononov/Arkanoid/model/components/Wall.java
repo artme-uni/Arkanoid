@@ -12,9 +12,16 @@ public class Wall {
     int brickHeight;
     int offsetHeight;
 
+    public int currentBrickCount;
+
     public Wall(int countWidth, int countHeight, Board board) {
         bricks = new ArrayList<>();
         setWall(countWidth, countHeight, board);
+    }
+
+    public void restoreBricks()
+    {
+        currentBrickCount = bricks.size();
     }
 
     public void setWall(int countWidth, int countHeight, Board board) {
@@ -26,12 +33,13 @@ public class Wall {
         offsetHeight = (int) (brickHeight / PROPORTION);
 
         for (int i = 0; i < countHeight; i++) {
-
             int currentHeight = offsetHeight * (i + 1) + brickHeight * i;
             for (int j = 0; j < countWidth; j++) {
                 bricks.add(new Brick(offsetWidth * (j + 1) + brickWidth * j, currentHeight, brickWidth, brickHeight));
             }
         }
+
+        currentBrickCount = bricks.size();
     }
 
     public int getBrickHeight() {return brickHeight;}
