@@ -1,16 +1,14 @@
 package ru.nsu.g.akononov.Arkanoid.controller;
 
-import ru.nsu.g.akononov.Arkanoid.model.Model;
 import ru.nsu.g.akononov.Arkanoid.view.View;
 
-import javax.swing.*;
 import java.awt.event.*;
 
 public class Controller {
 
     public Controller(View view) {
 
-        view.gameFrame.addKeyListener(new KeyAdapter() {
+        view.mainFrame.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 final boolean right = true;
@@ -32,7 +30,7 @@ public class Controller {
             }
         });
 
-        view.gameFrame.addMouseListener(new MouseAdapter() {
+        view.mainFrame.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
                 view.model.setDirection(e.getX(), e.getY());
@@ -40,7 +38,8 @@ public class Controller {
             }
         });
 
-        view.menuFrame.start.addActionListener(new ActionListener()
+/*        view.menuFrame.
+    //.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
             {
@@ -48,7 +47,7 @@ public class Controller {
                 view.gameFrame.setVisible(true);
                 view.gameFrame.setFocusable(true);
             }
-        });
+        });*/
 
     }
 }
