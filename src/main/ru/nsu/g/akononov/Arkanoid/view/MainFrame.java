@@ -7,23 +7,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.util.ArrayList;
 
-public class MainFrame extends JFrame implements ActionListener {
+public class GameFrame extends JFrame implements ActionListener {
 
-    CardLayout cardLayout;
-    JPanel manager;
-
-    public MainFrame(int width, int height,
+    public GameFrame(int width, int height,
                      printableObject ball,
                      printableObject plank,
                      printableObject background,
                      ArrayList<printableObject> wall)
     {
-        cardLayout = new CardLayout();
-        manager = new JPanel(cardLayout);
-
-
-        //manager.add("Background", pBackgroundColor);
-
         setTitle("Arkanoid");
         setSize( width, height+25);
         setLocationRelativeTo(null);
@@ -33,6 +24,9 @@ public class MainFrame extends JFrame implements ActionListener {
 
         setResizable(false);
         setFocusable(true);
+
+        //add(background);
+        setVisible(true);
 
         add(plank);
         setVisible(true);

@@ -7,23 +7,28 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Model implements IModel {
-
     public Ball ball;
     public Board board;
     public Wall wall;
     public Plank plank;
 
     private boolean inGame = false;
-    private boolean onPause = false;
+    public boolean onPause = false;
+
+    private int lifeCount = 3;
 
     private int bricksCountWidth = 6;
     private int bricksCountHeight = 5;
 
-    private int refreshRate = 30;
-    private int ballSpeedX = 15;
-    private int ballSpeedY = 15;
-    private int plankSpeed = 50;
+    private int boardHeight = 900;
+    private int boardWidth = 900;
 
+    private int refreshRate = 30;
+    private int ballSpeedX;
+    private int ballSpeedY;
+    private int plankSpeed;
+
+    double speedLevel = 1;
 
     Timer timer = new Timer();
     TimerTask task = new TimerTask() {
@@ -37,7 +42,10 @@ public class Model implements IModel {
                 }
 
                 if (ball.reflection(board.floor)) {
-                    restartGame();
+                    if (lifeCount == 1)
+                        restartGame();
+                    else
+                        respawn();
                 }
 
                 ball.reflection(plank.getArea());
@@ -46,10 +54,10 @@ public class Model implements IModel {
 
                     if (!wall.bricks.get(i).isDestroyed() && ball.reflectBrick(wall.bricks.get(i))) {
                         notifyObserver(operation.BRICK, i);
-                        wall.currentBrickCount --;
+                        wall.currentBrickCount--;
                     }
 
-                    if(wall.currentBrickCount == 0)
+                    if (wall.currentBrickCount == 0)
                         restartGame();
                 }
 
@@ -58,18 +66,30 @@ public class Model implements IModel {
         }
     };
 
-    public Model(int boardHeight, int boardWidth) {
 
-        timer.schedule(task, 0, refreshRate);
-        initModel(boardHeight, boardWidth);
+    public void setBoardSize(int boardHeight, int boardWidth) {
+        this.boardHeight = boardHeight;
+        this.boardWidth = boardWidth;
     }
 
-    public void initModel(int boardHeight, int boardWidth) {
-        int ballRadius = boardHeight / 20;
+    public void setWallSize(int bricksCountHeight, int bricksCountWidth) {
+        this.bricksCountHeight = bricksCountHeight;
+        this.bricksCountWidth = bricksCountWidth;
+    }
 
+    public void setSpeedLevel(int speed) {
+        speedLevel = (double) speed / 3;
+    }
+
+    public Model() {
+        timer.schedule(task, 0, refreshRate);
+    }
+
+    public void initModel() {
         board = new Board(boardHeight, boardWidth);
-        ball = new Ball(boardWidth / 2, boardHeight - 2 * ballRadius, ballRadius);
-        plank = new Plank((int) (boardWidth / 2 - 2 * ballRadius), boardHeight - ballRadius, ballRadius * 4, ballRadius, boardWidth);
+        int ballRadius = board.getHeight() / 20;
+        ball = new Ball(board.getWidth() / 2, board.getHeight() - 2 * ballRadius, ballRadius);
+        plank = new Plank((int) (board.getWidth() / 2 - 2 * ballRadius), board.getHeight() - ballRadius, ballRadius * 4, ballRadius, board.getWidth());
         wall = new Wall(bricksCountWidth, bricksCountHeight, board);
     }
 
@@ -100,8 +120,8 @@ public class Model implements IModel {
     public void startGame() {
 
         if (!inGame) {
-            ball.setSpeedX(ballSpeedX);
-            ball.setSpeedY(ballSpeedY);
+            ball.setSpeedX(ballSpeedX, (double) boardHeight / 900 * speedLevel);
+            ball.setSpeedY(ballSpeedY, (double) boardHeight / 900 * speedLevel);
 
             inGame = true;
         }
@@ -110,19 +130,39 @@ public class Model implements IModel {
     public void restartGame() {
         inGame = false;
         wall.restoreBricks();
+        lifeCount = 3;
 
-        initModel(board.getHeight(), board.getWidth());
+        initModel();
         notifyObserver(operation.BALL, 0);
         notifyObserver(operation.WALL, 0);
         notifyObserver(operation.PLANK, 0);
+        notifyObserver(operation.LIFE, lifeCount);
+    }
+
+    public void respawn() {
+        inGame = false;
+        ball.setDefaultDirection();
+        lifeCount--;
+
+        ball.getArea().x = board.getWidth() / 2 - ball.getHeight() / 2;
+        ball.getArea().y = board.getHeight() - ball.getHeight() * 3 / 2;
+        plank.getArea().x = board.getWidth() / 2 - 2 * ball.getHeight() / 2;
+        plank.getArea().y = board.getHeight() - ball.getHeight() / 2;
+
+        notifyObserver(operation.PLANK, 0);
+        notifyObserver(operation.BALL, 0);
+        notifyObserver(operation.LIFE, lifeCount);
     }
 
     public void playPause() {
         onPause = !onPause;
+        notifyObserver(operation.PAUSE, 0);
     }
 
-    public void shift(boolean isRight) {
-        if (!inGame) {
+    public void shiftRight(boolean isRight) {
+        plankSpeed = (int) (boardWidth / 18 * speedLevel);
+
+        if (!inGame && !onPause) {
             plank.setSpeedX(plankSpeed);
             ball.setShift(plankSpeed);
 
@@ -160,26 +200,33 @@ public class Model implements IModel {
                 }
                 break;
             }
-
             case BRICK: {
                 for (Observer observer : observers) {
                     observer.updateBrick(attribute);
                 }
                 break;
             }
-
             case WALL: {
                 for (Observer observer : observers) {
                     observer.updateWall();
                 }
                 break;
             }
-
             case PLANK: {
                 for (Observer observer : observers) {
                     observer.updatePlank();
                 }
                 break;
+            }
+            case LIFE: {
+                for (Observer observer : observers) {
+                    observer.updateLife(attribute);
+                }
+            }
+            case PAUSE: {
+                for (Observer observer : observers) {
+                    observer.updatePause();
+                }
             }
         }
     }

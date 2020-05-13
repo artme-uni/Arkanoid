@@ -21,15 +21,15 @@ public class Ball extends ObjectArea {
 
     public int getRadius() { return area.height/2;}
 
-    public void setSpeedX(int speedX) {
+    public void setSpeedX(int speedX, double proportion) {
         if(speedX < 0)
             right = false;
 
-        this.speedX = Math.abs(speedX);
+        this.speedX = (int) (Math.abs(speedX)*proportion);
     }
 
-    public void setSpeedY(int speedY) {
-        this.speedY = Math.abs(speedY);
+    public void setSpeedY(int speedY, double proportion) {
+        this.speedY = (int) (Math.abs(speedY) * proportion);
     }
 
     public void move() {
@@ -52,6 +52,12 @@ public class Ball extends ObjectArea {
         if (((area.x + (isRight ? 1 : -1) * shift - getWidth()/2) >= 0) && ((area.x + (isRight ? 1 : -1) * shift + 1.5 * area.width) <  boardWidth)) {
             area.x += (isRight ? 1 : -1) * shift;
         }
+    }
+
+    public void setDefaultDirection()
+    {
+        right = true;
+        down = false;
     }
 
     public boolean reflection(Rectangle rectangle)

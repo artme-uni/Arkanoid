@@ -2,7 +2,7 @@ package ru.nsu.g.akononov.Arkanoid.model.components;
 
 import java.awt.*;
 
-public class ObjectArea {
+public abstract class ObjectArea {
     protected Rectangle area;
 
     public int getX() {

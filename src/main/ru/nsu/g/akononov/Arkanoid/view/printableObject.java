@@ -6,7 +6,11 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-public class printableObject extends JPanel {
+public class PrintableObject extends JPanel {
+
+    public Image getImage() {
+        return image;
+    }
 
     private Image image;
 
@@ -30,7 +34,7 @@ public class printableObject extends JPanel {
         this.area.y = y;
     }
 
-    public printableObject(String imageName, int height, int width) {
+    public PrintableObject(String imageName, int height, int width) {
 
         this.area = new Rectangle(0, 0, width, height);
 
@@ -50,6 +54,7 @@ public class printableObject extends JPanel {
 
     @Override
     public void paint(Graphics g) {
+        super.paintComponent(g);
         g.drawImage(image, 0, 0, this);
     }
 }

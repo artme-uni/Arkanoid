@@ -5,8 +5,11 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class Geometry {
-
-    //Добавляет в список все углы Rectangle ввиде Point
+    /**
+     * Добавляет в map все углы прямоугольника
+     * @param rectangle - углы вычисляются исходя из передаваемого прямоугольника
+     * @param corners - добавляются в карту как пара ТОЧКА - УГОЛ
+     */
     static public void addCorners(Map<Point, corner> corners, Rectangle rectangle)
     {
         corners.put(new Point(rectangle.x, rectangle.y), corner.LU);
@@ -15,7 +18,11 @@ public class Geometry {
         corners.put(new Point(rectangle.x + rectangle.width, rectangle.y + rectangle.height), corner.RB);
     }
 
-    //Оставлет в списке только соседние точки
+    /**
+     * Оставлет в списке только соседние точки
+     * @param corners список всех точек
+     * @param current выбираются соседи заданной точки
+     */
     static public void nearbyPoints(ArrayList<Point> corners, Point current)
     {
         for(int i = 0; i < corners.size(); i++)
@@ -36,7 +43,11 @@ public class Geometry {
         }
     }
 
-    //Находит минимальное расстояние от точки B до отрезка A
+    /**
+     * Находит минимальное расстояние от точки B до отрезка A
+     * @param A1 - левый конец окрезка A
+     * @param A2 - правый конец отрезка A
+     */
     static public double minDistance(Point A1, Point A2, Point B)
     {
         int dx = A1.x - A2.x;
@@ -49,7 +60,9 @@ public class Geometry {
         return Math.sqrt(Math.pow(A2.x - B.x + dx*t, 2) + Math.pow(A2.y - B.y + dy*t, 2));
     }
 
-    //Определяет грань по двум точкам
+    /**
+     * Определяет грань прямоугольника по его двум углам
+     */
     static public edge defineEdge(corner a, corner b)
     {
         if(a == corner.LU && b == corner.RU || a == corner.RU && b == corner.LU)
@@ -75,7 +88,10 @@ public class Geometry {
         return edge.OUTSIDE;
     }
 
-    //проверяет, пересекаются ли два прямоугольника
+
+    /**
+     * Проверяет, пересекаются ли два прямоугольника a и b
+     */
     static public boolean isIntersect(Rectangle a, Rectangle b)
     {
         if (!(a.y < b.y + b.height || a.y + a.height > b.y ||

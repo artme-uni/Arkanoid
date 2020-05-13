@@ -19,12 +19,12 @@ public class Wall {
         setWall(countWidth, countHeight, board);
     }
 
-    public void restoreBricks()
-    {
+    public void restoreBricks() {
         currentBrickCount = bricks.size();
     }
 
     public void setWall(int countWidth, int countHeight, Board board) {
+        bricks.clear();
 
         brickWidth = (int) (board.getWidth() / (countWidth + (countWidth + 1) / PROPORTION));
         offsetWidth = (int) (brickWidth / PROPORTION);
@@ -42,6 +42,11 @@ public class Wall {
         currentBrickCount = bricks.size();
     }
 
-    public int getBrickHeight() {return brickHeight;}
-    public int getBrickWidth() {return brickWidth;}
+    public int getBrickHeight() {
+        return brickHeight;
+    }
+
+    public int getBrickWidth() {
+        return brickWidth;
+    }
 }
