@@ -177,7 +177,6 @@ public class Model implements IModel {
     }
 
     public void startPlankShifting(boolean isRight) {
-        System.out.println(isRight);
 
         if (!onPause) {
                 plank.setMoving(true);
