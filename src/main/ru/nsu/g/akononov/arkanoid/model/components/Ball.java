@@ -21,6 +21,14 @@ public class Ball extends ObjectArea {
 
     public int getRadius() { return area.height/2;}
 
+    public int getSpeedX() {
+        return speedX;
+    }
+
+    public int getSpeedY() {
+        return speedY;
+    }
+
     public void setSpeedX(int speedX, double proportion) {
         if(speedX < 0)
             right = false;
@@ -31,6 +39,7 @@ public class Ball extends ObjectArea {
     public void setSpeedY(int speedY, double proportion) {
         this.speedY = (int) (Math.abs(speedY) * proportion);
     }
+
 
     public void move() {
         area.x += (right ? 1 : -1) * speedX;

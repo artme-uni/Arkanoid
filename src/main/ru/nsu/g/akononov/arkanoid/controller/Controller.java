@@ -64,17 +64,27 @@ public class Controller {
         view.gameFrame.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-
                 if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-                    view.model.shiftRight(false);
+                    view.model.startPlankShifting(false);
                 }
 
                 if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                    view.model.shiftRight(true);
+                    view.model.startPlankShifting(true);
                 }
 
                 if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     view.model.playPause();
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+                    view.model.stopPlankShifting(false);
+                }
+
+                if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                    view.model.stopPlankShifting(true);
                 }
             }
         });

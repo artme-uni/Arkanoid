@@ -31,9 +31,18 @@ public class Model implements IModel {
     double speedLevel = 1;
 
     Timer timer = new Timer();
+    private boolean taskIsScheduled = false;
     TimerTask task = new TimerTask() {
         @Override
         public void run() {
+            if (plank.move()) {
+                notifyObserver(operation.PLANK, 0);
+                if (!inGame && !onPause) {
+                    ball.shift(plank.isMovingRight(), board.getWidth());
+                    notifyObserver(operation.BALL, 0);
+                }
+            }
+
             if (!onPause && inGame) {
                 ball.move();
 
@@ -82,7 +91,6 @@ public class Model implements IModel {
     }
 
     public Model() {
-        timer.schedule(task, 0, refreshRate);
     }
 
     public void initModel() {
@@ -91,6 +99,15 @@ public class Model implements IModel {
         ball = new Ball(board.getWidth() / 2, board.getHeight() - 2 * ballRadius, ballRadius);
         plank = new Plank((int) (board.getWidth() / 2 - 2 * ballRadius), board.getHeight() - ballRadius, ballRadius * 4, ballRadius, board.getWidth());
         wall = new Wall(bricksCountWidth, bricksCountHeight, board);
+
+        plankSpeed = (int) (boardWidth / 100 * speedLevel);
+        plank.setSpeedX(plankSpeed);
+        ball.setShift(plankSpeed);
+
+        if (!taskIsScheduled) {
+            timer.schedule(task, 0, refreshRate);
+            taskIsScheduled = true;
+        }
     }
 
     public void setDirection(int pointX, int pointY) {
@@ -118,7 +135,6 @@ public class Model implements IModel {
     }
 
     public void startGame() {
-
         if (!inGame) {
             ball.setSpeedX(ballSpeedX, (double) boardHeight / 900 * speedLevel);
             ball.setSpeedY(ballSpeedY, (double) boardHeight / 900 * speedLevel);
@@ -156,23 +172,22 @@ public class Model implements IModel {
 
     public void playPause() {
         onPause = !onPause;
+        plank.setMoving(false);
         notifyObserver(operation.PAUSE, 0);
     }
 
-    public void shiftRight(boolean isRight) {
-        plankSpeed = (int) (boardWidth / 18 * speedLevel);
-
-        if (!inGame && !onPause) {
-            plank.setSpeedX(plankSpeed);
-            ball.setShift(plankSpeed);
-
-            ball.shift(isRight, board.getWidth());
-            notifyObserver(operation.BALL, 0);
-        }
+    public void startPlankShifting(boolean isRight) {
+        System.out.println(isRight);
 
         if (!onPause) {
-            plank.move(isRight);
-            notifyObserver(operation.PLANK, 0);
+                plank.setMoving(true);
+                plank.setMovingRight(isRight);
+            }
+    }
+
+    public void stopPlankShifting(boolean isRight) {
+        if (plank.isMoving() && (plank.isMovingRight() == isRight)) {
+            plank.setMoving(false);
         }
     }
 

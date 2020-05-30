@@ -27,6 +27,9 @@ public class View implements Observer {
     private ImageLoader images = new ImageLoader();
 
     private PrintableObject ball;
+    private int ballSpeedX;
+    private int ballSpeedY;
+
     private PrintableObject plank;
     private PrintableObject background;
     private ArrayList<PrintableObject> wall;
@@ -40,6 +43,9 @@ public class View implements Observer {
 
     public void initGameFrame() {
         ball = new PrintableObject(images.ball3, model.ball.getRadius() * 2, model.ball.getRadius() * 2);
+        ballSpeedX = model.ball.getSpeedX();
+        ballSpeedY = model.ball.getSpeedY();
+
         plank = new PrintableObject(images.plank, model.plank.getHeight(), model.plank.getWidth());
         background = new PrintableObject(images.backgroundGame, model.board.getHeight(), model.board.getWidth());
         wall = new ArrayList<>();
@@ -83,7 +89,8 @@ public class View implements Observer {
         ball.setY(model.ball.getY());
 
         gameFrame.repaint(oldX, oldY, ball.getWidth(), ball.getHeight()*3/2);
-        gameFrame.repaint(ball.getX(), ball.getY(), ball.getWidth(), ball.getHeight()*3/2);
+        gameFrame.repaint(ball.getX() - ballSpeedX, ball.getY() - ballSpeedY,
+                ball.getWidth() + 2*ballSpeedX, ball.getHeight()*3/2 + 2*ballSpeedY);
     }
 
     @Override
